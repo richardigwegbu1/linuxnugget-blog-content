@@ -1,4 +1,4 @@
-name: Auto-Publish Blog Post
+name: Auto-Publish Blog Post via Proxy
 
 on:
   push:
@@ -21,10 +21,9 @@ jobs:
     - name: Install Dependencies
       run: pip install markdown requests
 
-    - name: Publish Post to WordPress
+    - name: Publish Post via Proxy
       env:
-        WP_USER: ${{ secrets.WP_USER }}
-        WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
-        WP_DOMAIN: "https://linuxnugget.com"
+        PROXY_URL: ${{ secrets.PROXY_URL }}
+        PROXY_TOKEN: ${{ secrets.PROXY_TOKEN }}
       run: python scripts/publish_post.py
 
