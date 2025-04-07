@@ -1,0 +1,30 @@
+name: Auto-Publish Blog Post
+
+on:
+  push:
+    paths:
+      - "posts/**.md"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Dependencies
+      run: pip install markdown requests
+
+    - name: Publish Post to WordPress
+      env:
+        WP_USER: ${{ secrets.WP_USER }}
+        WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        WP_DOMAIN: "https://linuxnugget.com"
+      run: python scripts/publish_post.py
+
