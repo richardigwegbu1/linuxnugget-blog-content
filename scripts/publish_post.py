@@ -4,8 +4,9 @@ import requests
 from pathlib import Path
 
 # Configuration for proxy server
-PROXY_URL = os.environ.get("PROXY_URL", "http://YOUR_EC2_PUBLIC_IP:5050/publish")
+PROXY_URL = os.environ["PROXY_URL"]
 PROXY_TOKEN = os.environ.get("PROXY_TOKEN", "secret-token")
+
 
 # Find the latest modified .md file
 md_files = sorted(Path("posts").rglob("*.md"), key=lambda p: p.stat().st_mtime, reverse=True)
