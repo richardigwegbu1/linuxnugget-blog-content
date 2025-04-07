@@ -1,30 +1,44 @@
+import os
+import markdown
+import requests
+from pathlib import Path
 
-name: Auto-Publish Blog Post via Proxy
+# Configuration for proxy server
+PROXY_URL = os.environ.get("PROXY_URL", "http://YOUR_EC2_PUBLIC_IP:5050/publish")
+PROXY_TOKEN = os.environ.get("PROXY_TOKEN", "secret-token")
 
-on:
-  push:
-    paths:
-      - "posts/**.md"
+# Find the latest modified .md file
+md_files = sorted(Path("posts").rglob("*.md"), key=lambda p: p.stat().st_mtime, reverse=True)
+if not md_files:
+    print("❌ No markdown files found.")
+    exit(1)
 
-jobs:
-  publish:
-    runs-on: ubuntu-latest
+latest_md = md_files[0]
+category = latest_md.parts[1]  # posts/linux/xyz.md → 'linux'
+title = latest_md.stem.replace("-", " ").title()
 
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+# Read and convert markdown to HTML
+with open(latest_md, "r", encoding="utf-8") as f:
+    md_content = f.read()
+html_content = markdown.markdown(md_content)
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
+# Prepare post data
+post_data = {
+    "title": title,
+    "content": html_content,
+    "status": "publish",
+    "tags": [category],
+}
 
-    - name: Install Dependencies
-      run: pip install markdown requests
+# Send to proxy server
+headers = {
+    "Content-Type": "application/json",
+    "X-Proxy-Token": PROXY_TOKEN
+}
+response = requests.post(PROXY_URL, json=post_data, headers=headers)
 
-    - name: Publish Post via Proxy
-      env:
-        PROXY_URL: ${{ secrets.PROXY_URL }}
-        PROXY_TOKEN: ${{ secrets.PROXY_TOKEN }}
-      run: python scripts/publish_post.py
+if response.status_code == 201:
+    print(f"✅ Successfully published via proxy: {title}")
+else:
+    print(f"❌ Failed to publish via proxy. Status: {response.status_code}, Response: {response.text}")
 
