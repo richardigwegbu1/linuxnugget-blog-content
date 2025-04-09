@@ -23,6 +23,7 @@ jobs:
 
     - name: Publish Post via Proxy
       env:
+        TARGET_POST: posts/ansible/introduction-to-ansible.md
         PROXY_URL: ${{ secrets.PROXY_URL }}
         PROXY_TOKEN: ${{ secrets.PROXY_TOKEN }}
       run: python scripts/publish_post.py
