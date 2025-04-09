@@ -1,5 +1,5 @@
 # Introduction to Ansible
-
+#<!-- Re-publish trigger for GitHub Actions -->
 Ansible is an open-source automation tool that simplifies software provisioning, configuration management, and application deployment. It allows you to manage multiple systems remotely with ease.
 
 ## Why Use Ansible?
