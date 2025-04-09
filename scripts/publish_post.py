@@ -4,7 +4,7 @@ import requests
 from pathlib import Path
 
 # Configuration
-PROXY_URL = os.environ.get("PROXY_URL", "http://YOUR_EC2_PUBLIC_IP:5050/publish")
+PROXY_URL = os.environ.get("PROXY_URL", "http://YOUR_EC2_PUBLIC_IP:5050/publish/post")
 PROXY_TOKEN = os.environ.get("PROXY_TOKEN", "secret-token")
 
 # Get the post path
